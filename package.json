@@ -1,0 +1,39 @@
+{
+  "name": "express-server-mongodb",
+  "version": "1.0.0",
+  "description": "Modular Node.js Express server using MongoDB, Mongoose, Zod, and JWT Auth in JavaScript",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "test": "node test-api.js"
+  },
+  "keywords": [
+    "express",
+    "nodejs",
+    "javascript",
+    "mongodb",
+    "mongoose",
+    "zod",
+    "jwt",
+    "auth"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "better-auth": "^1.7.7",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^7.7.0",
+    "mongoose": "^8.7.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
+}
