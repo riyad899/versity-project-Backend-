@@ -1,0 +1,31 @@
+import { z } from 'zod';
+
+const driverSignupValidationSchema = z.object({
+  body: z.object({
+    name: z.string({ required_error: 'Name is required' }).min(2, 'Name must be at least 2 characters'),
+    email: z.string({ required_error: 'Email is required' }).email('Invalid email address'),
+    password: z.string({ required_error: 'Password is required' }).min(6, 'Password must be at least 6 characters'),
+  }),
+});
+
+const driverLoginValidationSchema = z.object({
+  body: z.object({
+    email: z.string({ required_error: 'Email is required' }).email('Invalid email address'),
+    password: z.string({ required_error: 'Password is required' }),
+  }),
+});
+
+const driverUpdateProfileValidationSchema = z.object({
+  body: z.object({
+    name: z.string().min(2).optional(),
+    image: z.string().url().optional(),
+  }),
+});
+
+export const DriverValidation = {
+  driverSignupValidationSchema,
+  driverLoginValidationSchema,
+  driverUpdateProfileValidationSchema,
+};
+
+export default DriverValidation;
