@@ -3,17 +3,20 @@ import getAuth from '../../lib/auth.js';
 import { User } from './auth.model.js';
 
 const registerUser = async (body, headers) => {
-  const { email, password, name, role } = body;
+  const { email, password, name } = body;
   const auth = getAuth();
 
-  const isUserExist = await User.findOne({ email });
+  const normalizedEmail = email.trim().toLowerCase();
+
+  const isUserExist = await User.findOne({ email:normalizedEmail
+   });
   if (isUserExist) {
     throw new AppError(400, 'User with this email already exists!');
   }
 
   const authRes = await auth.api.signUpEmail({
     body: {
-      email,
+      email: normalizedEmail,
       password,
       name,
     },
@@ -21,12 +24,16 @@ const registerUser = async (body, headers) => {
     asResponse: true,
   });
 
-  const cookieHeader = authRes.headers.get('set-cookie');
   const responseData = await authRes.json();
+
+  if(!authRes.ok){
+    throw new AppError(authRes.status, responseData.message || 'Failed to register user');
+  }
 
   if (body.role && body.role !== 'user') {
     await User.findOneAndUpdate({ email }, { role: body.role });
   }
+  const cookieHeader = authRes.headers.get('set-cookie');
 
   return {
     ...responseData,
