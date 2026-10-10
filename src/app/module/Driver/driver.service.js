@@ -90,11 +90,25 @@ const updateDriverProfile = async (driverId, payload) => {
   return driver;
 };
 
+
+const getAllDriversFromDB = async () => {
+  const drivers = await User.find({
+    role: 'driver',
+    banned: { $ne: true },
+  })
+    .select('name email image role')
+    .sort({ name: 1 });
+
+  return drivers;
+};
+
+
 export const DriverService = {
   signupDriver,
   loginDriver,
   getDriverProfile,
   updateDriverProfile,
+  getAllDriversFromDB,
 };
 
 export default DriverService;

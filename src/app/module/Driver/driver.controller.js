@@ -56,11 +56,25 @@ const updateDriverProfile = catchAsync(async (req, res) => {
   });
 });
 
+
+const getAllDrivers = catchAsync(async (req, res) => {
+  const result = await DriverService.getAllDriversFromDB();
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'All drivers fetched successfully!',
+    data: result,
+  });
+});
+
+
 export const DriverController = {
   signupDriver,
   loginDriver,
   getDriverProfile,
   updateDriverProfile,
+  getAllDrivers,
 };
 
 export default DriverController;

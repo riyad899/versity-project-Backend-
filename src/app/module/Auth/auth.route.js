@@ -28,10 +28,14 @@ router.get(
 );
 
 // Native Better Auth express route handler (mounts /sign-up/email, /sign-in/email, /sign-out, etc.)
-router.all('/*', (req, res) => {
-  const handler = toNodeHandler(getAuth());
+
+ // Native Better Auth express route handler
+const handler = toNodeHandler(getAuth());
+
+router.all('*', (req, res) => {
   return handler(req, res);
 });
+
 
 export const AuthRoutes = router;
 export default AuthRoutes;

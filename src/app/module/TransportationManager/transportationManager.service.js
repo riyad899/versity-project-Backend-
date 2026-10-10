@@ -26,7 +26,15 @@ const signupManager = async (body, headers) => {
   const responseData = await authRes.json();
 
   // Assign transportation-manager role
-  await User.findOneAndUpdate({ email }, { role: 'transportation-manager' });
+const updatedManager = await User.findOneAndUpdate(
+  { email: email.toLowerCase() },
+  { $set: { role: 'transportation-manager' } },
+  { new: true, runValidators: true }
+);
+
+if (!updatedManager) {
+  throw new AppError(500, 'Failed to assign transportation-manager role!');
+}
 
   return {
     ...responseData,

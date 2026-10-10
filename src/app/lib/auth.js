@@ -18,6 +18,10 @@ export const getAuth = () => {
       database: mongodbAdapter(db, { client: mongoClient }),
       secret: envVars.betterAuthSecret,
       baseURL: `http://localhost:${envVars.port}`,
+      basePath: '/api/v1/auth',
+
+trustedOrigins: ['http://localhost:5173'],
+
       emailAndPassword: {
         enabled: true,
       },

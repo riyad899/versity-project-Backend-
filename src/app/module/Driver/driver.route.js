@@ -19,6 +19,12 @@ router.post(
   DriverController.loginDriver
 );
 
+router.get(
+  '/',
+  checkAuth('transportation-manager', 'admin'),
+  DriverController.getAllDrivers
+);
+
 // Protected Driver Profile endpoints
 router.get(
   '/me',
