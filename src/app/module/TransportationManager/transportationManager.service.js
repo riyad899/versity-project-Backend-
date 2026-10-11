@@ -22,8 +22,11 @@ const signupManager = async (body, headers) => {
     asResponse: true,
   });
 
-  const cookieHeader = authRes.headers.get('set-cookie');
   const responseData = await authRes.json();
+  if (!authRes.ok) {
+    throw new AppError(authRes.status || 400, responseData?.message || 'Failed to register transportation manager!');
+  }
+  const cookieHeader = authRes.headers.get('set-cookie');
 
   // Assign transportation-manager role
   await User.findOneAndUpdate({ email }, { role: 'transportation-manager' });
@@ -60,8 +63,11 @@ const loginManager = async (body, headers) => {
     asResponse: true,
   });
 
-  const cookieHeader = authRes.headers.get('set-cookie');
   const responseData = await authRes.json();
+  if (!authRes.ok) {
+    throw new AppError(authRes.status || 401, responseData?.message || 'Invalid email or password!');
+  }
+  const cookieHeader = authRes.headers.get('set-cookie');
 
   return {
     ...responseData,
@@ -95,12 +101,49 @@ const getAllDrivers = async () => {
   return drivers;
 };
 
+const getAllUsers = async (query = {}) => {
+  const filter = { role: 'user' };
+  if (query.search) {
+    filter.$or = [
+      { name: { $regex: query.search, $options: 'i' } },
+      { email: { $regex: query.search, $options: 'i' } },
+    ];
+  }
+  const users = await User.find(filter).select('-__v').sort({ createdAt: -1 });
+  return users;
+};
+
+const makeUserDriver = async (userId, headers) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new AppError(404, 'User not found!');
+  }
+  user.role = 'driver';
+  await user.save();
+
+  try {
+    const auth = getAuth();
+    if (auth.api.setRole && headers) {
+      await auth.api.setRole({
+        body: { userId, role: 'driver' },
+        headers,
+      });
+    }
+  } catch (err) {
+    // Non-blocking fallback
+  }
+
+  return user;
+};
+
 export const TransportationManagerService = {
   signupManager,
   loginManager,
   getManagerProfile,
   updateManagerProfile,
   getAllDrivers,
+  getAllUsers,
+  makeUserDriver,
 };
 
 export default TransportationManagerService;

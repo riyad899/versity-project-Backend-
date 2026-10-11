@@ -9,7 +9,27 @@ import envVars from './config/env.js';
 const app = express();
 
 // Parsers & Security Middlewares
-app.use(cors({ origin: [envVars.corsOrigin], credentials: true }));
+const allowedOrigins = [
+  envVars.corsOrigin,
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://localhost:5175',
+  'http://localhost:3000',
+].filter(Boolean);
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // allow requests with no origin (like mobile apps, curl, etc.)
+      if (!origin || allowedOrigins.includes(origin) || origin.startsWith('http://localhost:')) {
+        callback(null, true);
+      } else {
+        callback(null, true);
+      }
+    },
+    credentials: true,
+  })
+);
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

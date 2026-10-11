@@ -40,5 +40,19 @@ router.get(
   TransportationManagerController.getAllDrivers
 );
 
+// Protected User list for Manager
+router.get(
+  '/users',
+  checkAuth('transportation-manager', 'admin'),
+  TransportationManagerController.getAllUsers
+);
+
+// Protected Promote User to Driver
+router.patch(
+  '/users/:id/make-driver',
+  checkAuth('transportation-manager', 'admin'),
+  TransportationManagerController.makeUserDriver
+);
+
 export const TransportationManagerRoutes = router;
 export default TransportationManagerRoutes;

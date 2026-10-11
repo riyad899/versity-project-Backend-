@@ -22,8 +22,11 @@ const signupAdmin = async (body, headers) => {
     asResponse: true,
   });
 
-  const cookieHeader = authRes.headers.get('set-cookie');
   const responseData = await authRes.json();
+  if (!authRes.ok) {
+    throw new AppError(authRes.status || 400, responseData?.message || 'Failed to register admin!');
+  }
+  const cookieHeader = authRes.headers.get('set-cookie');
 
   // Ensure role is updated to admin in database
   await User.findOneAndUpdate({ email }, { role: 'admin' });
@@ -60,8 +63,11 @@ const loginAdmin = async (body, headers) => {
     asResponse: true,
   });
 
-  const cookieHeader = authRes.headers.get('set-cookie');
   const responseData = await authRes.json();
+  if (!authRes.ok) {
+    throw new AppError(authRes.status || 401, responseData?.message || 'Invalid email or password!');
+  }
+  const cookieHeader = authRes.headers.get('set-cookie');
 
   return {
     ...responseData,
