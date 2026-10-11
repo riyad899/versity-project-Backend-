@@ -67,12 +67,37 @@ const getAllDrivers = catchAsync(async (req, res) => {
   });
 });
 
+const getAllUsers = catchAsync(async (req, res) => {
+  const result = await TransportationManagerService.getAllUsers(req.query);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Users fetched successfully!',
+    data: result,
+  });
+});
+
+const makeUserDriver = catchAsync(async (req, res) => {
+  const headers = fromNodeHeaders(req.headers);
+  const result = await TransportationManagerService.makeUserDriver(req.params.id, headers);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'User promoted to Driver successfully!',
+    data: result,
+  });
+});
+
 export const TransportationManagerController = {
   signupManager,
   loginManager,
   getManagerProfile,
   updateManagerProfile,
   getAllDrivers,
+  getAllUsers,
+  makeUserDriver,
 };
 
 export default TransportationManagerController;

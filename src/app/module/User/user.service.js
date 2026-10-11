@@ -22,8 +22,11 @@ const signupUser = async (body, headers) => {
     asResponse: true,
   });
 
-  const cookieHeader = authRes.headers.get('set-cookie');
   const responseData = await authRes.json();
+  if (!authRes.ok) {
+    throw new AppError(authRes.status || 400, responseData?.message || 'Failed to create user account!');
+  }
+  const cookieHeader = authRes.headers.get('set-cookie');
 
   return {
     ...responseData,
@@ -53,8 +56,11 @@ const loginUser = async (body, headers) => {
     asResponse: true,
   });
 
-  const cookieHeader = authRes.headers.get('set-cookie');
   const responseData = await authRes.json();
+  if (!authRes.ok) {
+    throw new AppError(authRes.status || 401, responseData?.message || 'Invalid email or password!');
+  }
+  const cookieHeader = authRes.headers.get('set-cookie');
 
   return {
     ...responseData,

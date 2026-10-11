@@ -22,8 +22,11 @@ const signupDriver = async (body, headers) => {
     asResponse: true,
   });
 
-  const cookieHeader = authRes.headers.get('set-cookie');
   const responseData = await authRes.json();
+  if (!authRes.ok) {
+    throw new AppError(authRes.status || 400, responseData?.message || 'Failed to register driver!');
+  }
+  const cookieHeader = authRes.headers.get('set-cookie');
 
   // Assign driver role
   await User.findOneAndUpdate({ email }, { role: 'driver' });
@@ -60,8 +63,11 @@ const loginDriver = async (body, headers) => {
     asResponse: true,
   });
 
-  const cookieHeader = authRes.headers.get('set-cookie');
   const responseData = await authRes.json();
+  if (!authRes.ok) {
+    throw new AppError(authRes.status || 401, responseData?.message || 'Invalid email or password!');
+  }
+  const cookieHeader = authRes.headers.get('set-cookie');
 
   return {
     ...responseData,

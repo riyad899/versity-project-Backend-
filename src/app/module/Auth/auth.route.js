@@ -23,7 +23,7 @@ router.post(
 
 router.get(
   '/me',
-  checkAuth('user', 'admin'),
+  checkAuth('user', 'admin', 'driver', 'transportation-manager'),
   AuthController.getMe
 );
 
